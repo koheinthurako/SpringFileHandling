@@ -26,8 +26,8 @@ public class FileHandlingController {
 
 //	ဒီကနေ postMapping နဲ့ပေးတဲ့အခါ postman ဘက်က Body မှာ JSON အနေနဲ့ပေးမှာမဟုတ်ပဲ file အနေနဲ့ပေးမှာမို့ form-data ထဲမှာပဲစမ်းမှရမယ်
 	@PostMapping("/upload/{fileType}/{file}")
-	public ResponseEntity<String> upload(@PathVariable String fileType, @PathVariable("file") MultipartFile file)
-			throws IOException {
+	public ResponseEntity<String> upload(@PathVariable String fileType,
+			@PathVariable("file") MultipartFile file) throws IOException {
 //		MultipartFile ဆိုတာကတော့ ဘယ် file အမျိုးအစားမဆို လက်ခံနိုင်တဲ့ spring interface API တစ်ခု
 		String result = service.upload(file, fileType);
 		return ResponseEntity.ok().body(result);
@@ -59,12 +59,16 @@ public class FileHandlingController {
 //			method အလုပ်လုပ်ရင် controller ကနေ အပေါ်က file တွေပါတာလဲဖြစ်နိုင်သလို အောက်က default လို ဘာမှမပါတာ/တခြားဟာလည်းဖြစ်နိုင်တယ်
 			return ResponseEntity.badRequest().body("Unsupported File Type");
 		}
-		byte[] fileBytes = service.getFile(fileName);
 //		Controller ကနေပါလာတဲ့ fileName ကို serviceImple() ထဲကို parameter passing ပေးလိုက်တယ်
+		byte[] fileBytes = service.getFile(fileName);
+//		ပြီးမှ serviceImpl ဘက် method ကနေ return ပြန်လာတယ်  
 		if (fileBytes == null) {
 			return ResponseEntity.notFound().build();
+//			return ပြန်လာတာက null ဖြစ်နေရင် notFound().build() ဆိုပြီးတော့ object လေးတစ်ခုဆောက်လိုက်ပြီး body ထဲမှာ plain return ပြန်
 		}
 		return ResponseEntity.ok().contentType(type).body(fileBytes);
+//		null သာမဟုတ်ရင် OK() ဆိုပြီး contentType မှာ အပေါ်က စစ်ထားတဲ့ type အတိုင်းကို body ထဲမှာပြမယ် ဘာပြမှာလဲဆိုရင် fileBypes ဆိုတဲ့
+//		serviceImpl ဘက်က return ပြန်လာတဲ့ data ကိုပြမယ်ဆိုတဲ့ သဘောဖြစ်တယ်
 	}
 
 }
